@@ -1,0 +1,11 @@
+FROM golang:alpine AS builder
+
+WORKDIR /build
+ARG CGO_ENABLED=0
+ARG GOBIN=/build
+RUN go install -buildmode pie golang.org/x/example/hello@latest
+
+FROM ghcr.io/capnspacehook/pie-loader
+
+COPY --from=builder /build/hello /hello
+ENTRYPOINT [ "/hello" ]
