@@ -17,11 +17,11 @@ on:
 
 jobs:
   build:
-    # https://docs.github.com/en/actions/reference/authentication-in-a-workflow
+    runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
+    steps:
+      - uses: actions/checkout@v3
 
-    - uses: actions/checkout@v3
-
-    - uses: chainguard-images/actions/apko-snapshot@main
+      - uses: chainguard-images/actions/apko-snapshot@main
