@@ -16,14 +16,28 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       packages: write
-      contents: read
     steps:
       - uses: actions/checkout@v3
 
       - uses: chainguard-images/actions/apko-snapshot@main
         with:
           config: apko.yaml
+  
+  generate-readme:
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+          
+      - uses: capnspacehook/readme-generator@main
+        with:
+          branch: master
+          push-to-repo: true

@@ -1,0 +1,1 @@
+Distroless container image that can load statically-linked PIE binaries. Only `musl` and `libc6-compat` apk packages are installed so PIE binaries compatible with glibc or musl can be loaded and executed.
