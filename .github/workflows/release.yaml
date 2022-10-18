@@ -39,5 +39,9 @@ jobs:
           
       - uses: capnspacehook/readme-generator@main
         with:
+          repo: https://github.com/capnspacehook/pie-loader
+          name: pie-loader
           branch: master
+          location: ghcr.io/capnspacehook/pie-loader
+          description: Distroless container image for running statically-linked PIE binaries
           push-to-repo: true
