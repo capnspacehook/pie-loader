@@ -18,22 +18,55 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+
     permissions:
       id-token: write
       packages: write
+
+    outputs:
+      image-refs: ${{ steps.emit-refs.outputs.image-refs }}
+
     steps:
       - uses: actions/checkout@v3
 
-      - uses: chainguard-images/actions/apko-snapshot@main
+      - id: apko
+        uses: chainguard-images/actions/apko-snapshot@main
         with:
           config: apko.yaml
+          image_refs: apko.images
+
+      - id: emit-refs
+        run: |
+          cat apko.images | sed 's/$/\n/g' | grep -v '^$' | jq -R -s -c 'split("\n")[:-1]' | jq .
+          echo "image-refs=$(cat apko.images | sed 's/$/\n/g' | grep -v '^$' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+  
+  vuln-checks:
+    needs: release
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      packages: write
+
+    strategy:
+      matrix:
+        ref: ${{ fromJson(needs.release.outputs.image-refs) }}
+
+    steps:
+      - run: echo ${{ matrix.ref }}
+      - uses: chainguard-images/actions/vul-scans@main
+        with:
+          image: ${{ matrix.ref }}
+          RUN_SNYK: false
   
   generate-readme:
     needs: release
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
       id-token: write
+
     steps:
       - uses: actions/checkout@v3
           
