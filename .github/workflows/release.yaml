@@ -30,9 +30,10 @@ jobs:
       - uses: actions/checkout@v3
 
       - id: apko
-        uses: chainguard-images/actions/apko-snapshot@e61cb0631c83e84cadc21337be090ad06bf05da2
+        uses: chainguard-images/actions/apko-snapshot@371a24959d4eec52a225af028fb4b8737b6767a5
         with:
           config: apko.yaml
+          apko-image: ghcr.io/chainguard-dev/apko:v0.10.0
           image_refs: apko.images
 
       - id: emit-refs
